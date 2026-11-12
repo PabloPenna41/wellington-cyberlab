@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellington Negócios — Consultoria e Inovação</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <span class="logo-accent">Wellington</span> Negócios
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#servicos">Serviços</a></li>
+                    <li><a href="#sobre">Sobre Nós</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </nav>
+            <div class="nav-status">
+                <span class="status-indicator online"></span>
+                <span class="status-text">Ambiente Institucional</span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero-section">
+            <div class="container hero-content">
+                <span class="badge">Inovação e Resiliência Operacional</span>
+                <h1>Transformação digital com integridade e segurança de dados</h1>
+                <p>Apoiamos empresas no desenvolvimento de estratégias corporativas sólidas, otimização de infraestrutura crítica e governança em tecnologia.</p>
+                <div class="hero-actions">
+                    <a href="#servicos" class="btn btn-primary">Conhecer Soluções</a>
+                    <a href="#contato" class="btn btn-secondary">Fale com um Especialista</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="servicos" class="services-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Nossas Áreas de Atuação</h2>
+                    <p>Serviços desenhados para elevar a maturidade tecnológica e operacional da sua organização.</p>
+                </div>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="card-icon">💼</div>
+                        <h3>Consultoria em Governança</h3>
+                        <p>Alinhamento de processos corporativos, conformidade com legislações e gestão de riscos em ambientes corporativos dinâmicos.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="card-icon">🌐</div>
+                        <h3>Modernização de Infraestrutura</h3>
+                        <p>Planejamento de redes híbridas, migração segura e continuidade de negócios com máxima disponibilidade.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="card-icon">🛡️</div>
+                        <h3>Defesa e Proteção de Ativos</h3>
+                        <p>Auditorias contínuas, avaliação de vulnerabilidades e implementação de perímetros defensivos resilientes.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sobre" class="about-section">
+            <div class="container about-grid">
+                <div class="about-text">
+                    <h2>Sobre a Wellington Negócios</h2>
+                    <p>Fundada com a missão de conectar inteligência estratégica e robustez técnica, nossa equipe atua ao lado de gestores para garantir que cada etapa da evolução do seu negócio seja sustentável, previsível e protegida.</p>
+                    <ul class="about-highlights">
+                        <li>Foco em arquiteturas estáveis e verificadas.</li>
+                        <li>Adoção estrita de padrões de excelência internacional.</li>
+                        <li>Transparência operacional em todas as entregas.</li>
+                    </ul>
+                </div>
+                <div class="about-card-info">
+                    <div class="info-box">
+                        <h4>Laboratório de Pesquisa Wellington</h4>
+                        <p>Nossa divisão de pesquisa e cibersegurança testa e valida proativamente ferramentas e protocolos antes de sua aplicação em produção.</p>
+                        <span class="info-tag">Wellington CyberLab Ecosystem</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contato" class="contact-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Entre em Contato</h2>
+                    <p>Envie sua mensagem e retornaremos com uma proposta personalizada.</p>
+                </div>
+                <form class="contact-form" onsubmit="event.preventDefault(); alert('Mensagem enviada com sucesso ao departamento de atendimento da Wellington Negócios.');">
+                    <div class="form-group">
+                        <label for="nome">Nome Completo</label>
+                        <input type="text" id="nome" name="nome" placeholder="Seu nome ou organização" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail Corporativo</label>
+                        <input type="email" id="email" name="email" placeholder="contato@suaempresa.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mensagem">Mensagem</label>
+                        <textarea id="mensagem" name="mensagem" rows="4" placeholder="Descreva brevemente sua necessidade..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Enviar Solicitação</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2026 Wellington Negócios. Todos os direitos reservados. Ambiente institucional estático e auditado.</p>
+            <p class="footer-meta">Nó local: Wellington CyberLab Host 1 (CachyOS)</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+#!/usr/sbin/nft -f
+# ==============================================================================
+# Wellington CyberLab — Conjunto de Regras Permanentes (Nftables)
+# Arquivo: firewall/rules/permanent_rules.nft
+#
+# FILOSOFIA DE DESIGN DEFENSIVO:
+# 1. Utiliza a tabela unificada 'inet' (abrange simultaneamente IPv4 e IPv6).
+# 2. Política padrão de entrada (INPUT) é DROP (nada entra sem autorização explícita).
+# 3. Mantém o conntrack ativo para conexões estabelecidas e relacionadas.
+# 4. Assegura a integridade do loopback para evitar lockout de serviços internos.
+# 5. Mantém a porta SSH (22) e serviços essenciais salvaguardados.
+# ==============================================================================
+
+table inet wellington_permanent {
+    # Conjunto dinâmico de IPs administrativos autorizados (Whitelist)
+    set admin_whitelist {
+        type ipv4_addr
+        elements = { 127.0.0.1, 192.168.1.6 }
+    }
+
+    chain input {
+        type filter hook input priority filter; policy drop;
+
+        # 1. LOOPBACK ESSENCIAL: Permite comunicação entre processos locais (FastAPI, Nginx interno)
+        iifname "lo" counter accept comment "BlueTeam: Aceitar loopback essencial"
+
+        # 2. ESTADO DA CONEXÃO (Conntrack): Pacotes de respostas a conexões que nós iniciamos
+        ct state { established, related } counter accept comment "BlueTeam: Aceitar trafego de retorno"
+
+        # 3. DESCARTE DE CONEXÕES INVÁLIDAS: Pacotes malformados ou corrompidos
+        ct state invalid counter drop comment "BlueTeam: Descartar pacotes invalidos"
+
+        # 4. ICMP ESSENCIAL: Permite ping diagnóstico e controle de MTU
+        ip protocol icmp icmp type { echo-request, echo-reply, destination-unreachable, time-exceeded } counter accept comment "BlueTeam: ICMP Diagnostico"
+        ip6 nexthdr icmpv6 counter accept comment "BlueTeam: ICMPv6 Essencial"
+
+        # 5. SERVIÇOS CRÍTICOS DO LABORATÓRIO (Permanentes)
+        # HTTP / Nginx (Porta 80 e 8000)
+        tcp dport { 80, 8000 } counter accept comment "BlueTeam: Servidor Web Wellington Negocios"
+        
+        # HTTPS (Porta 443)
+        tcp dport 443 counter accept comment "BlueTeam: HTTPS Seguro"
+
+        # WireGuard VPN (Porta UDP 51820)
+        udp dport 51820 counter accept comment "BlueTeam: WireGuard VPN Server"
+
+        # SSH Administrativo (Porta 22 - Proteção contra lockout)
+        tcp dport 22 counter accept comment "BlueTeam: SSH Administrativo Permanente"
+
+        # LOG E CONTADOR DE PACOTES DESCARTADOS:
+        # Registra tentativas de conexão não autorizadas para auditoria do Blue Team
+        limit rate 5/minute burst 10 packets log prefix "Wellington-FW-DROP: " flags all
+        counter comment "BlueTeam: Contador de Pacotes Bloqueados pela Politica Padrao"
+    }
+
+    chain output {
+        type filter hook output priority filter; policy accept;
+        # Saída livre por padrão para o servidor baixar atualizações e responder clientes
+        counter comment "BlueTeam: Trafego de Saida Permitido"
+    }
+
+    chain forward {
+        type filter hook forward priority filter; policy drop;
+        # Bloqueia roteamento indevido através do servidor até que o gateway seja configurado
+        counter comment "BlueTeam: Forward Desativado por Seguranca"
+    }
+}

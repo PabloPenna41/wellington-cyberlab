@@ -1,0 +1,40 @@
+#!/usr/sbin/nft -f
+# ==============================================================================
+# Wellington CyberLab — Conjunto de Regras Experimentais (Nftables)
+# Arquivo: firewall/rules/experimental_rules.nft
+#
+# CARACTERÍSTICA FUNDAMENTAL:
+# Esta tabela (wellington_experimental) roda com prioridade filter - 5 (avaliada antes)
+# e pode ser ativada, modificada ou TOTALMENTE REMOVIDA sem afetar a tabela
+# permanente 'wellington_permanent'. NUNCA causa lockout do administrador!
+# ==============================================================================
+
+table inet wellington_experimental {
+    # Lista de IPs em quarentena (Adicionados dinamicamente para demonstrações)
+    set redteam_blacklist {
+        type ipv4_addr
+        elements = { 10.77.0.2 }
+    }
+
+    chain input_experimental {
+        type filter hook input priority filter - 5; policy accept;
+
+        # ======================================================================
+        # DEMONSTRAÇÃO 1: BLOQUEIO SELETIVO DO RED TEAM (Blacklist com LOG)
+        # Qualquer pacote vindo da estação Windows é descartado e logado
+        # ======================================================================
+        ip saddr @redteam_blacklist log prefix "EXPERIMENTO-BLOCK-REDTEAM: " counter drop comment "Exp1: Bloqueio do Atacante"
+
+        # ======================================================================
+        # DEMONSTRAÇÃO 2: DEFESA CONTRA RATE-FLOOD / FORÇA BRUTA (Anti-DoS)
+        # Limita novas conexões HTTP a 10 por segundo por IP; descarta o excesso
+        # ======================================================================
+        tcp dport { 80, 8000 } ct state new meter http_flood { ip saddr limit rate over 10/second burst 15 packets } log prefix "EXPERIMENTO-RATE-LIMIT: " counter drop comment "Exp2: Anti-Flood Rate Limit"
+
+        # ======================================================================
+        # DEMONSTRAÇÃO 3: REJEIÇÃO RÁPIDA DE PORTAS NÃO AUTORIZADAS (REJECT vs DROP)
+        # Devolve um pacote TCP RST imediato em vez de ignorar o atacante
+        # ======================================================================
+        tcp dport 8080 counter reject with tcp reset comment "Exp3: Rejeicao rapida com TCP Reset"
+    }
+}
